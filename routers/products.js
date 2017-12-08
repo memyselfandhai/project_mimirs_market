@@ -1,13 +1,13 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const router = express.Router();
 const {
   Product,
   sequelize,
   Category,
-  Sequelize: { Op },
-} = require('../models/sequelize');
-const h = require('../helpers');
+  Sequelize: { Op }
+} = require("../models/sequelize");
+const h = require("../helpers");
 
 // ----------------------------------------
 // Build Query Settings
@@ -30,41 +30,45 @@ const _buildSearchQuery = req => {
 // ----------------------------------------
 // Index
 // ----------------------------------------
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     //query is an object that has the search queries
     const query = _buildSearchQuery(req);
+    console.log("QUERY");
+    console.log(query);
 
     let queryObj = {};
-    queryObj['price'] = query.price;
+    queryObj["price"] = query.price;
 
     let queryObjCategory = {};
-    queryObjCategory['name'] = query.Category;
+    queryObjCategory["name"] = query.Category;
 
-    let searchParam = '%';
-    if (query.search !== '') searchParam = `%${query.search}%`;
-    queryObj['name'] = {'$iLike': searchParam};
+    let searchParam = "%";
+    if (query.search !== "") searchParam = `%${query.search}%`;
+    queryObj["name"] = { $iLike: searchParam };
 
-    let querySort = {
-      sortNameASC: ['name', 'ASC'],
-      sortNameDESC: ['name', 'DESC'],
-      sortPriceASC:['price', 'ASC'],
-      sortPriceDESC: ['price', 'DESC']
-    }[query.sort] || [];
+    let querySort =
+      {
+        sortNameASC: ["name", "ASC"],
+        sortNameDESC: ["name", "DESC"],
+        sortPriceASC: ["price", "ASC"],
+        sortPriceDESC: ["price", "DESC"]
+      }[query.sort] || [];
 
-
-
-    let products = await Product.findAll({
-      where: queryObj,
-      include: [{ model: Category, where: queryObjCategory }],
-      //order: [querySort]
-    });
+    let products = {};
+    if (queryObj.price === undefined) {
+      products = await Product.findAll({});
+    } else {
+      products = await Product.findAll({
+        where: queryObj,
+        include: [{ model: Category, where: queryObjCategory }]
+        //order: [querySort]
+      });
+    }
 
     let categories = await Category.findAll({});
 
-
-
-    res.render('products/index', { products, categories });
+    res.render("products/index", { products, categories });
   } catch (e) {
     next(e);
   }
@@ -73,17 +77,17 @@ router.get('/', async (req, res, next) => {
 // ----------------------------------------
 // Show
 // ----------------------------------------
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id, {
-      include: Category,
+      include: Category
     });
 
     if (!product) {
-      req.flash('error', 'Product not found');
-      return res.redirect('/products');
+      req.flash("error", "Product not found");
+      return res.redirect("/products");
     }
-    res.render('products/show', { product });
+    res.render("products/show", { product });
   } catch (e) {
     next(e);
   }

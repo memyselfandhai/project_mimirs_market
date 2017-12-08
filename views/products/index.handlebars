@@ -14,11 +14,10 @@ categoryId: DataTypes.INTEGER, -->
   <h3>Price</h3>
   <select class="form-control" name="price[min]" id="price_min">
     {{#times start=0 stop=10 as |prices| }}
-      <option value="{{ prices }}" selected>{{prices }}</option>
+      <option value="{{ prices }}" >{{prices }}</option>
     {{/times}}
   </select>
 
-  <br>
   <select class="form-control" name="price[max]" id="price_max">
     {{#times start=0 stop=10 as |prices| }}
       <option value="{{ prices }}" selected>{{prices }}</option>
