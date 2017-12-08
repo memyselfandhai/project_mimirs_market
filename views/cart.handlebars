@@ -1,0 +1,17 @@
+<header class="page-header row">
+  <div class="col-md-4">
+    </div>
+  <div class="col-md-8">
+    <h1>Cart</h1>
+  </div>
+</header>
+
+<div>
+  {{cart}}
+</div>
+
+
+{{#each products as |product|}}
+  Product name -> {{product.name}}
+  {{product.quantity}}
+{{/each}}
