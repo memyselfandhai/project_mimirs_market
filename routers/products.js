@@ -34,7 +34,6 @@ router.get('/', async (req, res, next) => {
   try {
     //query is an object that has the search queries
     const query = _buildSearchQuery(req);
-    console.log(query);
 
     let queryObj = {};
     queryObj['price'] = query.price;
@@ -53,7 +52,7 @@ router.get('/', async (req, res, next) => {
       sortPriceDESC: ['price', 'DESC']
     }[query.sort] || [];
 
-    console.log(querySort);
+
 
     let products = await Product.findAll({
       where: queryObj,
@@ -62,6 +61,8 @@ router.get('/', async (req, res, next) => {
     });
 
     let categories = await Category.findAll({});
+
+
 
     res.render('products/index', { products, categories });
   } catch (e) {
@@ -77,7 +78,7 @@ router.get('/:id', async (req, res, next) => {
     const product = await Product.findById(req.params.id, {
       include: Category,
     });
-    console.log(product);
+
     if (!product) {
       req.flash('error', 'Product not found');
       return res.redirect('/products');
